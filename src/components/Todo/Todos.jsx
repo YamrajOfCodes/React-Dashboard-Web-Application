@@ -7,6 +7,7 @@ import {
 } from "../../hooks/TodoHooks/todoHooks";
 
 import TodoModal from "../Models/TodoModel";
+import toast from "react-hot-toast";
 
 export default function Todo() {
   const [page, setPage] = useState(1);
@@ -40,6 +41,10 @@ export default function Todo() {
         data: { todo: value },
       });
     } else {
+      if(value.trim() === ""){
+        toast.error("please add input");
+        return;
+      }
       addTodo({
         todo: value,
         completed: false,
