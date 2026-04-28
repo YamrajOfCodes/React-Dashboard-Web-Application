@@ -1,6 +1,6 @@
 # React Dashboard Web App
 
-A modern, full-featured admin dashboard built with React.js — created under a strict **2-hour time constraint** while still delivering clean architecture, real-world patterns, and a polished UI.
+A modern, full-featured admin dashboard built with React.js, created under a strict **2-hour time constraint** while still delivering clean architecture, real-world patterns, and a polished UI.
 
 ---
 
