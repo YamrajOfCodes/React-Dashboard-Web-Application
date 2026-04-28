@@ -6,7 +6,7 @@ A modern, full-featured admin dashboard built with React.js — created under a 
 
 ## What Is This?
 
-This is a simulation of a real admin dashboard where you can manage **Todos** and **Users** — complete with authentication, CRUD operations, search, filtering, and pagination. It was built to demonstrate practical frontend engineering without over-engineering things.
+This is a simulation of a real admin dashboard where you can manage **Todos** and **Users** , complete with authentication, CRUD operations, search, filtering, and pagination. It was built to demonstrate practical frontend engineering without over-engineering things.
 
 The goal was simple: ship something that *works well*, *looks good*, and *scales cleanly*.
 
@@ -25,7 +25,7 @@ The goal was simple: ship something that *works well*, *looks good*, and *scales
 - Add, edit, and delete todos
 - Search by title
 - Filter by status: All / Completed / Pending
-- **Bonus UX:** Click directly on a todo's text to toggle its completion — no checkboxes needed
+- **Bonus UX:** Click directly on a todo's text to toggle its completion,no checkboxes needed
 
 ### User Management
 - Table view on desktop, card view on mobile (automatically switches)
@@ -43,7 +43,7 @@ The goal was simple: ship something that *works well*, *looks good*, and *scales
 |---|---|
 | UI Framework | React.js |
 | Routing | React Router DOM |
-| State Management | Context API + useReducer |
+| State Management | React Query  |
 | Data Fetching | React Query (TanStack Query) |
 | HTTP Client | Axios |
 | Styling | Tailwind CSS |
@@ -52,8 +52,6 @@ The goal was simple: ship something that *works well*, *looks good*, and *scales
 ---
 
 ## How State Is Managed
-
-There's a **single global store** using Context API + useReducer that handles:
 
 - Auth state (logged in / logged out)
 - Users and todos data
