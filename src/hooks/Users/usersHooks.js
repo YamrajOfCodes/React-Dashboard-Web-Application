@@ -11,11 +11,12 @@ const QUERY_KEY = ["users"];
 
 export const useUsers = () => {
   return useQuery({
-    queryKey: QUERY_KEY,
+    queryKey: ["users"],
     queryFn: fetchUsers,
+    staleTime: Infinity, 
+    gcTime: Infinity,
   });
 };
-
 
 export const useAddUser = () => {
   const queryClient = useQueryClient();
@@ -24,17 +25,20 @@ export const useAddUser = () => {
     mutationFn: addUser,
 
     onMutate: async (newUser) => {
-      await queryClient.cancelQueries({ queryKey: QUERY_KEY });
+      await queryClient.cancelQueries({ queryKey: ["users"] });
 
-      const prevData = queryClient.getQueryData(QUERY_KEY) || { users: [] };
+      const prevData = queryClient.getQueryData(["users"]);
 
-      queryClient.setQueryData(QUERY_KEY, (old) => {
-        const users = old?.users ?? old ?? [];
+      queryClient.setQueryData(["users"], (old) => {
+        const users = old?.users || [];
 
         return {
           ...old,
           users: [
-            { id: Date.now(), ...newUser },
+            {
+              ...newUser,
+              id: Date.now(),
+            },
             ...users,
           ],
         };
@@ -43,9 +47,9 @@ export const useAddUser = () => {
       return { prevData };
     },
 
-    onError: (_, __, context) => {
-      queryClient.setQueryData(QUERY_KEY, context.prevData);
-      toast.error("Failed to add user");
+    onError: (_err, _newUser, context) => {
+      queryClient.setQueryData(["users"], context.prevData);
+      toast.error("Add failed");
     },
 
     onSuccess: () => {
@@ -54,20 +58,27 @@ export const useAddUser = () => {
   });
 };
 
-
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateUser,
+    mutationFn: async ({ id, data }) => {
+      const isLocal = String(id).length > 10;
+
+      if (isLocal) {
+        return { id, data }; 
+      }
+
+      return updateUser({ id, data });
+    },
 
     onMutate: async ({ id, data }) => {
-      await queryClient.cancelQueries({ queryKey: QUERY_KEY });
+      await queryClient.cancelQueries({ queryKey: ["users"] });
 
-      const prevData = queryClient.getQueryData(QUERY_KEY) || { users: [] };
+      const prevData = queryClient.getQueryData(["users"]);
 
-      queryClient.setQueryData(QUERY_KEY, (old) => {
-        const users = old?.users ?? old ?? [];
+      queryClient.setQueryData(["users"], (old) => {
+        const users = old?.users || [];
 
         return {
           ...old,
@@ -80,30 +91,39 @@ export const useUpdateUser = () => {
       return { prevData };
     },
 
-    onError: (_, __, context) => {
-      queryClient.setQueryData(QUERY_KEY, context.prevData);
-      toast.error("Failed to update user");
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(["users"], context.prevData);
+      toast.error("Update failed");
     },
 
     onSuccess: () => {
-      toast.success("User updated");
+      toast.success("Updated successfully");
     },
   });
 };
+
 
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteUser,
+    mutationFn: async (id) => {
+      const isLocal = String(id).length > 10;
+
+      if (isLocal) {
+        return id; 
+      }
+
+      return deleteUser(id);
+    },
 
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: QUERY_KEY });
+      await queryClient.cancelQueries({ queryKey: ["users"] });
 
-      const prevData = queryClient.getQueryData(QUERY_KEY) || { users: [] };
+      const prevData = queryClient.getQueryData(["users"]);
 
-      queryClient.setQueryData(QUERY_KEY, (old) => {
-        const users = old?.users ?? old ?? [];
+      queryClient.setQueryData(["users"], (old) => {
+        const users = old?.users || [];
 
         return {
           ...old,
@@ -114,13 +134,13 @@ export const useDeleteUser = () => {
       return { prevData };
     },
 
-    onError: (_, __, context) => {
-      queryClient.setQueryData(QUERY_KEY, context.prevData);
-      toast.error("Failed to delete user");
+    onError: (_err, _id, context) => {
+      queryClient.setQueryData(["users"], context.prevData);
+      toast.error("Delete failed");
     },
 
     onSuccess: () => {
-      toast.success("User deleted");
+      toast.success("Deleted successfully");
     },
   });
 };
