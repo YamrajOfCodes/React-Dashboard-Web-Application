@@ -8,8 +8,8 @@ export default function ConfirmModal({
   loading = false,
 }) {
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg p-6 w-80 shadow-lg">
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50" onClick={onCancel}>
+      <div className="bg-white rounded-lg p-6 w-80 shadow-lg" onClick={(e)=>e.stopPropagation()}>
 
         <h2 className="text-lg font-semibold text-gray-800 mb-2">
           {title}
@@ -30,7 +30,7 @@ export default function ConfirmModal({
 
           <button
             onClick={onConfirm}
-            className="px-3 py-1.5 bg-red-500 text-white rounded hover:bg-red-600"
+            className="px-3 py-1.5 cursor-pointer bg-red-500 text-white rounded hover:bg-red-600"
             disabled={loading}
           >
             {loading ? "Deleting..." : "Delete"}

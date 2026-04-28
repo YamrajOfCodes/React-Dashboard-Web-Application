@@ -8,6 +8,7 @@ import {
 
 import TodoModal from "../Models/TodoModel";
 import toast from "react-hot-toast";
+import ConfirmModal from "../Models/Confirm";
 
 export default function Todo() {
   const [page, setPage] = useState(1);
@@ -16,12 +17,15 @@ export default function Todo() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTodo, setEditingTodo] = useState(null);
+  const [deleteTodoModel,setDeleteTodoModel] = useState(false);
 
   const { data, isLoading } = useTodos(page);
 
   const { mutate: addTodo } = useAddTodo();
   const { mutate: updateTodo } = useUpdateTodo();
-  const { mutate: deleteTodo } = useDeleteTodo();
+  const { mutate: deleteTodo,isPending: isDeleting } = useDeleteTodo();
+  const [deleteId,setDeleteId] = useState(null)
+
 
   const filteredTodos = data?.todos
     ?.filter((todo) =>
@@ -69,10 +73,14 @@ export default function Todo() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Delete this todo?")) {
-      deleteTodo(id);
-    }
+    setDeleteTodoModel(true)
+    setDeleteId(id)
   };
+
+  const handleDeleteTodo = (id)=>{
+     deleteTodo(id);
+     setDeleteTodoModel(false);
+  }
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -244,6 +252,16 @@ export default function Todo() {
       }}
       onSubmit={handleSubmit}
       initialValue={editingTodo?.todo}
+    />
+  )}
+
+    {deleteTodoModel && (
+    <ConfirmModal
+      onCancel={()=>{setDeleteTodoModel(false)}}
+      onConfirm={()=>{handleDeleteTodo(deleteId)}}
+      title={"Delete Todo?"}
+      message={"Do you want to delete Todo"}
+      loading={isDeleting}
     />
   )}
 </div>
